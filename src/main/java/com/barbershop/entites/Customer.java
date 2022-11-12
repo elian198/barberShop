@@ -28,6 +28,9 @@ public class Customer {
     @Column(name = "BIRTH_NAME")
     private Date birth_name;
 
+    @ManyToOne()
+    private Employee employee;
+
    @OneToMany(mappedBy = "customer")
    private Set<Appointment> listApoint = new HashSet<>();
 
@@ -86,6 +89,15 @@ public class Customer {
         return listApoint;
     }
 
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
     public void setListApoint(Set<Appointment> listApoint) {
         this.listApoint = listApoint;
     }
@@ -99,6 +111,8 @@ public class Customer {
                 ", email='" + email + '\'' +
                 ", phone=" + phone +
                 ", birth_name=" + birth_name +
+                ", employee=" + employee +
+                ", listApoint=" + listApoint +
                 '}';
     }
 }
