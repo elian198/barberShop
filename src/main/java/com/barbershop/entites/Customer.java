@@ -28,8 +28,8 @@ public class Customer {
     @Column(name = "BIRTH_NAME")
     private Date birth_name;
 
-   // @OneToMany(mappedBy = "appointment")
-   //private Set<String> listAppointments = new HashSet<>();
+   @OneToMany(mappedBy = "customer")
+   private Set<Appointment> listApoint = new HashSet<>();
 
 
     public Customer() {}
@@ -80,6 +80,14 @@ public class Customer {
 
     public void setBirth_name(Date birth_name) {
         this.birth_name = birth_name;
+    }
+
+    public Set<Appointment> getListApoint() {
+        return listApoint;
+    }
+
+    public void setListApoint(Set<Appointment> listApoint) {
+        this.listApoint = listApoint;
     }
 
     @Override
