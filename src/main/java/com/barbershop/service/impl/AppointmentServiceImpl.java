@@ -35,7 +35,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<Appointment> orderByDuration() {
-        return null;
+        if(appointmentRepository.orderByDuration() != null){
+            return appointmentRepository.orderByDuration();
+        }
+
+            return null ;
     }
 
     @Override
