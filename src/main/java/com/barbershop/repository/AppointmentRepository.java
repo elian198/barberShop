@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
+    @Query(value = "SELECT  FROM appointment WHERE appointment.customer_id = :filtro" ,nativeQuery = true)
+    Customer findByIdCustomer(@Param("filtro") Long filtro);
 }

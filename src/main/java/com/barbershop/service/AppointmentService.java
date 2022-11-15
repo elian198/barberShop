@@ -1,4 +1,4 @@
-package com.barbershop.service.impl;
+package com.barbershop.service;
 
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface AppointmentService {
 
    List<Appointment> findAll();
-   Customer findByIdCustomer(Long idCustomer);
+   Customer findByIdCustomer(Long idCustomer) throws Exception;
    List<Appointment> orderByDuration();
    Optional<Appointment> findById(Long id);
 }
