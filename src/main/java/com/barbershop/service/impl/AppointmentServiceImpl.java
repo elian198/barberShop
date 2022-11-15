@@ -35,7 +35,10 @@ public class AppointmentServiceImpl implements AppointmentService{
     }
 
     @Override
-    public Optional<Appointment> findById(Long id) {
-        return Optional.empty();
+    public Optional<Appointment> findById(Long id)  throws ArithmeticException{
+        if(id == null){
+            throw new ArithmeticException();
+        }
+        return appointmentRepository.findById(id);
     }
 }
