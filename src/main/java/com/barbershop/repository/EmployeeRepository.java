@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee,Long> {
-    @Query(value = "SELECT * FROM employee WHERE employee.email = :filtro" ,nativeQuery = true)
+    @Query(value = "SELECT * FROM employees WHERE employees.email = :filtro" ,nativeQuery = true)
     Employee findByEmail(@Param("filtro") String filtro);
 }
