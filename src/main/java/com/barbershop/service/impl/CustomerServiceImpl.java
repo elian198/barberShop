@@ -5,9 +5,11 @@ import com.barbershop.entites.Customer;
 import com.barbershop.repository.CustomerRepository;
 import com.barbershop.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
