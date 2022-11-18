@@ -49,4 +49,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
         return appointmentRepository.findById(id);
     }
+
+    @Override
+    public void delete(Long id) throws Exception {
+        if(appointmentRepository.existsById(id)){
+            appointmentRepository.deleteById(id);
+        }
+        throw new Exception("No se encontro el id");
+    }
+
+    public Appointment update(Appointment appointment) throws Exception {
+        if(appointmentRepository.findById(appointment.getId()) !=null){
+            appointmentRepository.save(appointment);
+        }
+        throw new Exception("No se encontro el usuario");
+    }
+
+    public void save(Appointment appointment){
+        appointmentRepository.save(appointment);
+    }
 }
