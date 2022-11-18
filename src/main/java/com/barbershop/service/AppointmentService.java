@@ -12,4 +12,5 @@ public interface AppointmentService {
    Customer findByIdCustomer(Long idCustomer) throws Exception;
    List<Appointment> orderByDuration();
    Optional<Appointment> findById(Long id);
+   void delete(Long id) throws Exception;
 }
