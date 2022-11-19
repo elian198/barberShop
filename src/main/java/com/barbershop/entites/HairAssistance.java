@@ -16,9 +16,6 @@ public class HairAssistance {
     @Column(name = "PRICE")
     private Double price;
 
-   @ManyToOne
-    private Appointment appointments;
-
     public HairAssistance() { }
 
     public Long getId() {
@@ -45,21 +42,12 @@ public class HairAssistance {
         this.price = price;
     }
 
-    public Appointment getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(Appointment appointments) {
-        this.appointments = appointments;
-    }
-
     @Override
     public String toString() {
         return "HairAssistance{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
                 ", price=" + price +
-                ", appointments=" + appointments +
                 '}';
     }
 }

@@ -1,5 +1,7 @@
 package com.barbershop.service.impl;
 
+import com.barbershop.DTO.ConvertDto;
+import com.barbershop.DTO.CustomerDto;
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
 import com.barbershop.repository.CustomerRepository;
@@ -20,9 +22,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer findByEmail(String email) {
+    public CustomerDto findByEmail(String email) {
         if(customerRepository.findByEmail(email) != null){
-            return customerRepository.findByEmail(email);
+            ConvertDto convertDto = new ConvertDto();
+            return  convertDto.convertirCustomeraDto(customerRepository.findByEmail(email));
         }
         return null;
     }
@@ -48,7 +51,8 @@ public class CustomerServiceImpl implements CustomerService {
     public void addAppointment(Long id, Appointment appointment) {
          if(customerRepository.existsById(id)){
              Customer customer = customerRepository.findById(id).get();
-             customer.getListApoint().add(appointment);
+             customer.getAppointment().add(appointment);
+             customerRepository.save(customer);
          }
          //throw new noExist()
     }
@@ -57,7 +61,7 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteAppointment(Long id, Long idAppointment) {
         if(customerRepository.existsById(id)){
             Customer customer = customerRepository.findById(id).get();
-            customer.getListApoint().remove(idAppointment);
+            customer.getAppointment().remove(idAppointment);
         }
         //throw new noExist()
     }

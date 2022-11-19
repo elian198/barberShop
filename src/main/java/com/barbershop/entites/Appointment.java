@@ -1,11 +1,13 @@
 package com.barbershop.entites;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
-@Table(name = "Apointments")
-public class Appointment {
+@Table(name = "Appointment")
+public class Appointment  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +24,6 @@ public class Appointment {
 
     @ManyToOne()
     private Customer customer;
-
     public Appointment() { }
 
     public Long getId() {

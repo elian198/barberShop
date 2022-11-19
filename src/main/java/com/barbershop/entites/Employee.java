@@ -24,8 +24,6 @@ public class Employee {
     @Column(name = "PASSWORD")
     private String password;
 
-    @OneToMany(mappedBy = "employee")
-    private Set<Customer> customers = new HashSet<>();
 
     public Employee() { }
 
@@ -69,12 +67,15 @@ public class Employee {
         this.password = password;
     }
 
-    public Set<Customer> getCustomers() {
-        return customers;
-    }
-
-    public void setCustomers(Set<Customer> customers) {
-        this.customers = customers;
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
 
