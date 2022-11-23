@@ -1,6 +1,7 @@
 package com.barbershop.controller;
 
 
+import com.barbershop.DTO.CustomerDto;
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
 import com.barbershop.service.impl.CustomerServiceImpl;
@@ -54,5 +55,11 @@ public class CustomerController {
     @PostMapping("/customer/addAppointment/{id}")
     public void addAppointment(@PathVariable Long id , @RequestBody Appointment appointment){
         customerService.addAppointment(id, appointment);
+    }
+
+    @GetMapping("/customer/appoint/{id}")
+    public CustomerDto mostrarFindById(@PathVariable Long id){
+
+        return customerService.lookAppointMent(id);
     }
 }

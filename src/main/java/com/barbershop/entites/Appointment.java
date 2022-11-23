@@ -3,11 +3,12 @@ package com.barbershop.entites;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "Appointment")
-public class Appointment  {
+public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +23,21 @@ public class Appointment  {
     @Column(name = "DURATION")
     private Integer duration;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "APPOINTMENT_TYPESERVICE",
+            joinColumns = {
+                    @JoinColumn(name = "id_APPOINTMENT")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "id_TYPESERVICE")})
+    private Set<TypeService> typeService = new HashSet<>();
+
+
     @ManyToOne()
     private Customer customer;
-    public Appointment() { }
+
+    public Appointment() {
+    }
 
     public Long getId() {
         return id;
@@ -66,6 +79,14 @@ public class Appointment  {
         this.customer = customer;
     }
 
+    public Set<TypeService> getTypeService() {
+        return typeService;
+    }
+
+    public void setTypeService(Set<TypeService> typeService) {
+        this.typeService = typeService;
+    }
+
     @Override
     public String toString() {
         return "Appointment{" +
@@ -73,6 +94,7 @@ public class Appointment  {
                 ", description='" + description + '\'' +
                 ", date=" + date +
                 ", duration=" + duration +
+                ", typeService=" + typeService +
                 ", customer=" + customer +
                 '}';
     }

@@ -2,12 +2,14 @@ package com.barbershop.controller;
 
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Employee;
+import com.barbershop.entites.TypeService;
 import com.barbershop.service.AppointmentService;
 import com.barbershop.service.impl.AppointmentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @RestController
@@ -48,4 +50,30 @@ public class AppointmentController {
     public List<Appointment> findAll(){
         return appointmentService.findAll();
     }
+
+    @PostMapping("/appointment/{id}")
+    public ResponseEntity<?> addTypeService(@PathVariable Long id, @RequestBody TypeService typeService){
+        if(appointmentService.findById(id) == null){
+            return ResponseEntity.badRequest().body("No se encontro el id ingresado");
+        }
+        appointmentService.addTypeService(id, typeService);
+        return ResponseEntity.ok("Servicio agregado");
+    }
+
+    @DeleteMapping("/appointment/deleteTypeService/{id}/{idRemove}")
+    public ResponseEntity<?> deleteTypeService(@PathVariable Long id, @PathVariable Long idRemove) throws FileNotFoundException {
+        if(appointmentService.findById(id) == null){
+            return ResponseEntity.badRequest().body("No se encontro el id ingresado");
+        }
+        appointmentService.deleteTypeService(id, idRemove);
+        return ResponseEntity.ok("Servicio eliminado");
+    }
+
+    @GetMapping("/appointment/precioFinal/{id}")
+    public String preciotoal(@PathVariable Long id){
+
+        return "El precio total es : " + appointmentService.total(id);
+    }
+
+
 }

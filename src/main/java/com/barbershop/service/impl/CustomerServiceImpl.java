@@ -35,6 +35,7 @@ public class CustomerServiceImpl implements CustomerService {
         if(customerRepository.findByEmail(customer.getEmail()) != null){
             //throw new EmailExist()
         }
+        customer.setSoft_delete(false);
         customerRepository.save(customer);
 
     }
@@ -79,5 +80,10 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<Customer> findAll() {
         return customerRepository.findAll();
+    }
+
+    public CustomerDto lookAppointMent(Long id){
+         ConvertDto convertDto = new ConvertDto();
+         return convertDto.convertirCustomeraDto(customerRepository.findById(id).get());
     }
 }

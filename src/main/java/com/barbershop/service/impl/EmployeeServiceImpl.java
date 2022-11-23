@@ -50,6 +50,7 @@ public class EmployeeServiceImpl implements EmployeService {
 
           //throw new EmailExistEmployee();
         }
+        employee.setSoft_delete(false);
         employeeRepository.save(employee);
     }
 

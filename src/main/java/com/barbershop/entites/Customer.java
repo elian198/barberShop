@@ -1,5 +1,8 @@
 package com.barbershop.entites;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -8,6 +11,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Customer")
+@SQLDelete(sql = "UPDATE customer SET soft_delete=true WHERE id = ?")
+@Where(clause = "soft_delete = false")
 public class Customer {
 
     @Id
@@ -28,6 +33,9 @@ public class Customer {
 
     @Column(name = "BIRTH_NAME")
     private Date birth_name;
+
+    @Column(name = "SOFT_DELETE")
+    private  Boolean soft_delete;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "CUSTOMER_APPOINTMENT",
@@ -94,6 +102,14 @@ public class Customer {
 
     public void setAppointment(Set<Appointment> appointment) {
         this.appointment = appointment;
+    }
+
+    public Boolean getSoft_delete() {
+        return soft_delete;
+    }
+
+    public void setSoft_delete(Boolean soft_delete) {
+        this.soft_delete = soft_delete;
     }
 
     @Override
