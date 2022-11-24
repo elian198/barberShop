@@ -24,6 +24,8 @@ public class Employee {
     @Column(name = "PASSWORD")
     private String password;
 
+    @Column(name = "SOFT_DELETE")
+    private Boolean soft_delete;
     public Employee() { }
 
     public Long getId() {
@@ -67,5 +69,22 @@ public class Employee {
     }
 
 
+    public Boolean getSoft_delete() {
+        return soft_delete;
+    }
+
+    public void setSoft_delete(Boolean soft_delete) {
+        this.soft_delete = soft_delete;
+    }
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }
 

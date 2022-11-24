@@ -67,7 +67,13 @@ public class EmployeeController {
         return employeeService.delete(id);
     }
     @GetMapping("/employee")
-    public List<Employee> findAll(){
+   public List<Employee> findAll(){
         return employeeService.findAll();
     }
+
+    @GetMapping("/inicio")
+    public  String inicio(){
+        return "INICIO ";
+    }
 }
+

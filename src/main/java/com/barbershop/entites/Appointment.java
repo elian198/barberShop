@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "Apointments")
+@Table(name = "Appointment")
 public class Appointment {
 
     @Id
@@ -20,16 +20,20 @@ public class Appointment {
     @Column(name = "DURATION")
     private Integer duration;
 
-
-    @ManyToOne()
-    private HairAssistance hairAssistance;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "APPOINTMENT_TYPESERVICE",
+            joinColumns = {
+                    @JoinColumn(name = "id_APPOINTMENT")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "id_TYPESERVICE")})
+    private Set<TypeService> typeService = new HashSet<>();
 
 
     @ManyToOne()
     private Customer customer;
 
-    public Appointment() {
-    }
+    public Appointment() { }
 
     public Long getId() {
         return id;
@@ -63,13 +67,20 @@ public class Appointment {
         this.duration = duration;
     }
 
-
-    public HairAssistance getHairAssistance() {
-        return hairAssistance;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setHairAssistance(HairAssistance hairAssistance) {
-        this.hairAssistance = hairAssistance;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Set<TypeService> getTypeService() {
+        return typeService;
+    }
+
+    public void setTypeService(Set<TypeService> typeService) {
+        this.typeService = typeService;
     }
 
     @Override
@@ -79,7 +90,8 @@ public class Appointment {
                 ", description='" + description + '\'' +
                 ", date=" + date +
                 ", duration=" + duration +
-                ", hairAssistance=" + hairAssistance +
+                ", typeService=" + typeService +
+                ", customer=" + customer +
                 '}';
     }
 }

@@ -1,10 +1,12 @@
 package com.barbershop.entites;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "HairAssistances")
-public class HairAssistance {
+@Table(name = "typeService")
+public class TypeService {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,10 +18,17 @@ public class HairAssistance {
     @Column(name = "PRICE")
     private Double price;
 
-   @ManyToOne
-    private Appointment appointments;
 
-    public HairAssistance() { }
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "TYPESERVICE_APPOINTMENT",
+            joinColumns = {
+                    @JoinColumn(name = "id_TYPESERVICE")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "id_APPOINTMENT")})
+    private Set<TypeService> appointment = new HashSet<>();
+
+    public TypeService() { }
 
     public Long getId() {
         return id;
@@ -45,21 +54,23 @@ public class HairAssistance {
         this.price = price;
     }
 
-    public Appointment getAppointments() {
-        return appointments;
+
+
+    public Set<TypeService> getAppointment() {
+        return appointment;
     }
 
-    public void setAppointments(Appointment appointments) {
-        this.appointments = appointments;
+    public void setAppointment(Set<TypeService> appointment) {
+        this.appointment = appointment;
     }
 
     @Override
     public String toString() {
-        return "HairAssistance{" +
+        return "TypeService{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
                 ", price=" + price +
-                ", appointments=" + appointments +
+                ", appointment=" + appointment +
                 '}';
     }
 }
