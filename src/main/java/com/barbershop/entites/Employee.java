@@ -24,9 +24,6 @@ public class Employee {
     @Column(name = "PASSWORD")
     private String password;
 
-    @OneToMany(mappedBy = "employee")
-    private Set<Customer> customers = new HashSet<>();
-
     public Employee() { }
 
     public Long getId() {
@@ -69,12 +66,6 @@ public class Employee {
         this.password = password;
     }
 
-    public Set<Customer> getCustomers() {
-        return customers;
-    }
 
-    public void setCustomers(Set<Customer> customers) {
-        this.customers = customers;
-    }
 }
 

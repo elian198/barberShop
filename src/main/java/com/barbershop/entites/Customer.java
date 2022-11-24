@@ -7,6 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Customer")
+
 public class Customer {
 
     @Id
@@ -28,11 +29,15 @@ public class Customer {
     @Column(name = "BIRTH_NAME")
     private Date birth_name;
 
-    @ManyToOne()
-    private Employee employee;
 
-   @OneToMany(mappedBy = "customer")
-   private Set<Appointment> listApoint = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "CUSTOMER_APPOINTMENTS",
+            joinColumns = {
+                    @JoinColumn(name = "id_customer")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "id_appointment") })
+   private Set<Appointment> appointment = new HashSet<>();
 
 
     public Customer() {}
@@ -85,21 +90,12 @@ public class Customer {
         this.birth_name = birth_name;
     }
 
-    public Set<Appointment> getListApoint() {
-        return listApoint;
+    public Set<Appointment> getAppointment() {
+        return appointment;
     }
 
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
-
-    public void setListApoint(Set<Appointment> listApoint) {
-        this.listApoint = listApoint;
+    public void setAppointment(Set<Appointment> appointment) {
+        this.appointment = appointment;
     }
 
     @Override
@@ -111,8 +107,7 @@ public class Customer {
                 ", email='" + email + '\'' +
                 ", phone=" + phone +
                 ", birth_name=" + birth_name +
-                ", employee=" + employee +
-                ", listApoint=" + listApoint +
+                ", appointment=" + appointment +
                 '}';
     }
 }

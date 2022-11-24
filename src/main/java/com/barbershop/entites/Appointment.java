@@ -20,10 +20,16 @@ public class Appointment {
     @Column(name = "DURATION")
     private Integer duration;
 
+
+    @ManyToOne()
+    private HairAssistance hairAssistance;
+
+
     @ManyToOne()
     private Customer customer;
 
-    public Appointment() { }
+    public Appointment() {
+    }
 
     public Long getId() {
         return id;
@@ -57,12 +63,13 @@ public class Appointment {
         this.duration = duration;
     }
 
-    public Customer getCustomer() {
-        return customer;
+
+    public HairAssistance getHairAssistance() {
+        return hairAssistance;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setHairAssistance(HairAssistance hairAssistance) {
+        this.hairAssistance = hairAssistance;
     }
 
     @Override
@@ -72,7 +79,7 @@ public class Appointment {
                 ", description='" + description + '\'' +
                 ", date=" + date +
                 ", duration=" + duration +
-                ", customer=" + customer +
+                ", hairAssistance=" + hairAssistance +
                 '}';
     }
 }

@@ -48,7 +48,7 @@ public class CustomerServiceImpl implements CustomerService {
     public void addAppointment(Long id, Appointment appointment) {
          if(customerRepository.existsById(id)){
              Customer customer = customerRepository.findById(id).get();
-             customer.getListApoint().add(appointment);
+             customer.getAppointment().add(appointment);
          }
          //throw new noExist()
     }
@@ -57,7 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteAppointment(Long id, Long idAppointment) {
         if(customerRepository.existsById(id)){
             Customer customer = customerRepository.findById(id).get();
-            customer.getListApoint().remove(idAppointment);
+            customer.getAppointment().remove(idAppointment);
         }
         //throw new noExist()
     }
