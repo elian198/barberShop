@@ -1,15 +1,15 @@
 package com.barbershop.service;
 
-import com.barbershop.entites.HairAssistance;
+import com.barbershop.entites.TypeService;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface HairService {
 
-     void save(HairAssistance hairAssistance) throws FileNotFoundException;
+     void save(TypeService hairAssistance) throws FileNotFoundException;
      void delete(Long id) throws Exception;
-     HairAssistance update(HairAssistance hairAssistance) throws Exception;
-     List<HairAssistance> findAll();
-     HairAssistance findById(Long id) throws FileNotFoundException;
+     TypeService update(TypeService hairAssistance) throws Exception;
+     List<TypeService> findAll();
+     TypeService findById(Long id) throws FileNotFoundException;
 }

@@ -1,6 +1,8 @@
 package com.barbershop.controller;
 
 
+import com.barbershop.DTO.CustomerDto;
+import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
 import com.barbershop.service.impl.CustomerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +45,21 @@ public class CustomerController {
     @GetMapping("/customer")
     public List<Customer> findAll(){
         return customerService.findAll();
+    }
+
+    @PostMapping( value = "/customer/appoint", params = "email")
+    public ResponseEntity<?> findAppoint(@RequestParam String email){
+
+        return ResponseEntity.ok(  customerService.findByEmail(email));
+    }
+    @PostMapping("/customer/addAppointment/{id}")
+    public void addAppointment(@PathVariable Long id , @RequestBody Appointment appointment){
+        customerService.addAppointment(id, appointment);
+    }
+
+    @GetMapping("/customer/appoint/{id}")
+    public CustomerDto mostrarFindById(@PathVariable Long id){
+
+        return customerService.lookAppointMent(id);
     }
 }

@@ -50,6 +50,7 @@ public class EmployeeServiceImpl implements EmployeService {
 
           //throw new EmailExistEmployee();
         }
+        employee.setSoft_delete(false);
         employeeRepository.save(employee);
     }
 
@@ -73,9 +74,8 @@ public class EmployeeServiceImpl implements EmployeService {
 
     @Override
     public void addCustomer(Long id, Customer customer) {
-      if(employeeRepository.existsById(id)){
-         Employee employee = employeeRepository.findById(id).get();
-          employee.getCustomers().add(customer);
-      }
+
     }
+
+
 }
