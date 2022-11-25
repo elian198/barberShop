@@ -4,6 +4,7 @@ import com.barbershop.DTO.CustomerDto;
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface CustomerService {
@@ -11,8 +12,8 @@ public interface CustomerService {
     void save(Customer customer);
     void delete(Long id);
     void addAppointment(Long id, Appointment appointment);
-    void  deleteAppointment(Long id, Long idAppointment);
+    Customer  deleteAppointment(Long id, Long idAppointment);
     Customer update(Customer customer);
-    Customer updateAppointment(Appointment appointment);
     List<Customer> findAll();
+    Customer findById(Long id) throws FileNotFoundException;
 }

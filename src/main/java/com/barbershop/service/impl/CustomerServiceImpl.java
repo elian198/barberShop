@@ -1,12 +1,18 @@
 package com.barbershop.service.impl;
 
+import com.barbershop.DTO.ConvertDto;
+import com.barbershop.DTO.CustomerDto;
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
+import com.barbershop.exception.EmailExist;
+import com.barbershop.exception.NoExist;
 import com.barbershop.repository.CustomerRepository;
 import com.barbershop.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @Service
@@ -14,6 +20,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private AppointmentServiceImpl appointmentService;
 
     public CustomerServiceImpl(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
@@ -29,10 +38,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void save(Customer customer) {
+    public void save(Customer customer) throws EmailExist{
         if(customerRepository.findByEmail(customer.getEmail()) != null){
-            //throw new EmailExist()
+            throw new EmailExist(HttpStatus.NOT_FOUND, "El email ya existe");
         }
+
         customerRepository.save(customer);
 
     }
@@ -49,18 +59,21 @@ public class CustomerServiceImpl implements CustomerService {
     public void addAppointment(Long id, Appointment appointment) {
          if(customerRepository.existsById(id)){
              Customer customer = customerRepository.findById(id).get();
-             customer.getListApoint().add(appointment);
+             customer.getAppointment().add(appointment);
+             customerRepository.save(customer);
          }
          //throw new noExist()
     }
 
     @Override
-    public void deleteAppointment(Long id, Long idAppointment) {
+    public Customer deleteAppointment(Long id, Long idAppointment) throws NoExist {
         if(customerRepository.existsById(id)){
             Customer customer = customerRepository.findById(id).get();
-            customer.getListApoint().remove(idAppointment);
+            Appointment appointment = appointmentService.findById(idAppointment).get();
+            customer.getAppointment().remove(appointment);
+             return customerRepository.save(customer);
         }
-        //throw new noExist()
+        throw new NoExist(HttpStatus.NOT_FOUND, "No existe el id " + id + " ingresado");
     }
 
     @Override
@@ -68,13 +81,17 @@ public class CustomerServiceImpl implements CustomerService {
         return null;
     }
 
-    @Override
-    public Customer updateAppointment(Appointment appointment) {
-        return null;
-    }
 
     @Override
     public List<Customer> findAll() {
         return customerRepository.findAll();
+    }
+
+    @Override
+    public Customer findById(Long id) throws FileNotFoundException {
+        if(customerRepository.existsById(id)){
+            return customerRepository.findById(id).get();
+        }
+         throw  new FileNotFoundException("No existe el id");
     }
 }

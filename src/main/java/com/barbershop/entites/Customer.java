@@ -10,8 +10,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Customer")
-@SQLDelete(sql = "UPDATE customer SET soft_delete=true WHERE id = ?")
-@Where(clause = "soft_delete = false")
 public class Customer {
 
     @Id
@@ -33,8 +31,7 @@ public class Customer {
     @Column(name = "BIRTH_NAME")
     private Date birth_name;
 ;
-    @Column(name = "SOFT_DELETE")
-    private  Boolean soft_delete;
+
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "CUSTOMER_APPOINTMENT",
@@ -103,13 +100,7 @@ public class Customer {
         this.appointment = appointment;
     }
 
-    public Boolean getSoft_delete() {
-        return soft_delete;
-    }
 
-    public void setSoft_delete(Boolean soft_delete){
-            this.soft_delete = soft_delete;
-        }
 
     @Override
     public String toString() {
