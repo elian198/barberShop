@@ -2,6 +2,8 @@ package com.barbershop.entites;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Appointment")
@@ -91,7 +93,6 @@ public class Appointment {
                 ", date=" + date +
                 ", duration=" + duration +
                 ", typeService=" + typeService +
-                ", customer=" + customer +
                 '}';
     }
 }

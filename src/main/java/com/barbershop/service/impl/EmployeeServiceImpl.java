@@ -2,9 +2,14 @@ package com.barbershop.service.impl;
 
 import com.barbershop.entites.Customer;
 import com.barbershop.entites.Employee;
+import com.barbershop.exception.EmployeeNoExists;
 import com.barbershop.repository.EmployeeRepository;
 import com.barbershop.service.EmployeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,8 +22,6 @@ public class EmployeeServiceImpl implements EmployeService , UserDetailsService 
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    @Autowired
-    private  PasswordEncoder passwordEncoder;
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;

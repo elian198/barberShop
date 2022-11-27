@@ -1,11 +1,15 @@
 package com.barbershop.entites;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "Employees")
+@SQLDelete(sql = "UPDATE employees SET soft_delete=true WHERE id = ?")
+@Where(clause = "soft_delete = false")
+
 public class Employee {
 
     @Id
@@ -24,8 +28,10 @@ public class Employee {
     @Column(name = "PASSWORD")
     private String password;
 
-    @Column(name = "SOFT_DELETE")
+    @Column( name = "SOFT_DELETE")
     private Boolean soft_delete;
+
+
     public Employee() { }
 
     public Long getId() {
@@ -68,7 +74,6 @@ public class Employee {
         this.password = password;
     }
 
-
     public Boolean getSoft_delete() {
         return soft_delete;
     }
@@ -76,6 +81,7 @@ public class Employee {
     public void setSoft_delete(Boolean soft_delete) {
         this.soft_delete = soft_delete;
     }
+
     @Override
     public String toString() {
         return "Employee{" +

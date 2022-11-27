@@ -1,5 +1,7 @@
 package com.barbershop.service.impl;
 
+import com.barbershop.DTO.AppointmentDto;
+import com.barbershop.DTO.ConvertDto;
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
 import com.barbershop.entites.TypeService;
@@ -64,6 +66,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public List<AppointmentDto> turnos() {
+
+        ConvertDto convertDto = new ConvertDto();
+        return  convertDto.convertirAppointmentDto(appointmentRepository.orderByLocalDate());
+
+    }
+
+    @Override
     public void addTypeService(Long id, TypeService typeService) {
         if(appointmentRepository.existsById(id)){
           Appointment appointment =   appointmentRepository.findById(id).get();
@@ -104,4 +114,5 @@ public class AppointmentServiceImpl implements AppointmentService {
       return total;
 
     }
+
 }

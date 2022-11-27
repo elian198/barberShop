@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,10 +28,13 @@ public class EmployeeController {
 
     private final JwtTokenUtil jwtTokenUtil;
 
-    public EmployeeController(EmployeeServiceImpl employeeService, AuthenticationManager authManager, JwtTokenUtil jwtTokenUtil) {
+    private final PasswordEncoder passwordEncoder;
+
+    public EmployeeController(EmployeeServiceImpl employeeService, AuthenticationManager authManager, JwtTokenUtil jwtTokenUtil, PasswordEncoder passwordEncoder) {
         this.employeeService = employeeService;
         this.authManager = authManager;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
@@ -43,20 +47,20 @@ public class EmployeeController {
         if(employeeService.findByEmail(registerPayload.getEmail())!= null){
             return ResponseEntity.badRequest().body("EL email ya existe");
         }
+        registerPayload.setPassword(passwordEncoder.encode(registerPayload.getPassword()));
         Employee employee = registerPayload.convertToEntities();
         employeeService.Save(employee);
         return ResponseEntity.ok("Usuario creado");
     }
     @PostMapping("/login")
-    public ResponseEntity<String> update(@RequestBody LoginPayload loginPayload){
+    public ResponseEntity<JwtPayload> update(@RequestBody LoginPayload loginPayload){
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginPayload.getFirst_name(), loginPayload.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtTokenUtil.generateJwtToken(authentication);
-        System.out.println(new JwtPayload(jwt));
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return ResponseEntity.ok(jwt);
+        return ResponseEntity.ok(new JwtPayload(jwt));
     }
 
     @DeleteMapping("/employee/{id}")
