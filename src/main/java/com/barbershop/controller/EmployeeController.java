@@ -6,6 +6,8 @@ import com.barbershop.security.payload.JwtPayload;
 import com.barbershop.security.payload.LoginPayload;
 import com.barbershop.security.payload.RegisterPayload;
 import com.barbershop.service.impl.EmployeeServiceImpl;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,6 +40,8 @@ public class EmployeeController {
     }
 
     @PostMapping("/register")
+    @ApiOperation("Crea un nuevo usuario")
+    @ApiParam("RegisterPayload registerPayload")
     public ResponseEntity<?> save(@RequestBody RegisterPayload registerPayload){
         if(registerPayload == null){
             return ResponseEntity.badRequest().body("No se puede enviar campos vacios");
@@ -53,6 +57,8 @@ public class EmployeeController {
         return ResponseEntity.ok("Usuario creado");
     }
     @PostMapping("/login")
+    @ApiOperation("Comprueba que exista el usuario enviado, si esta todo ok devulve un token, que es el que nos va a servir para navegar por las diferentes end points")
+    @ApiParam("LoginPayload loginPayload")
     public ResponseEntity<JwtPayload> update(@RequestBody LoginPayload loginPayload){
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginPayload.getFirst_name(), loginPayload.getPassword()));
@@ -64,6 +70,8 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/employee/{id}")
+    @ApiOperation("Elimina un usuario")
+    @ApiParam("Long id")
     public List<Employee> delete(@PathVariable Long id){
         if(employeeService.findById(id) == null){
 
@@ -75,9 +83,6 @@ public class EmployeeController {
         return employeeService.findAll();
     }
 
-    @GetMapping("/inicio")
-    public  String inicio(){
-        return "INICIO ";
-    }
+
 }
 

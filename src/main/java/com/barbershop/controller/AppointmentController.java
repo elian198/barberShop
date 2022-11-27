@@ -6,6 +6,8 @@ import com.barbershop.entites.Employee;
 import com.barbershop.entites.TypeService;
 import com.barbershop.service.AppointmentService;
 import com.barbershop.service.impl.AppointmentServiceImpl;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,8 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointment")
+    @ApiOperation("Agrega un turno")
+    @ApiParam("Appointment")
     public ResponseEntity<?> save(@RequestBody Appointment appointment){
         if(appointment == null){
             return ResponseEntity.badRequest().body("No se puede enviar campos vacios");
@@ -33,6 +37,8 @@ public class AppointmentController {
         return ResponseEntity.ok("Usuario creado");
     }
     @PutMapping("/appointment")
+    @ApiOperation("Actualiza un turno")
+    @ApiParam("Appointment appointment")
     public ResponseEntity<?> update(@RequestBody Appointment appointment) throws Exception {
         if(appointmentService.findById(appointment.getId()) == null){
             return ResponseEntity.badRequest().body("El id no se encontro");
@@ -42,6 +48,8 @@ public class AppointmentController {
     }
 
     @DeleteMapping("/appointment/{id}")
+    @ApiOperation("Borra un turno")
+    @ApiParam("Long id")
     public void delete(@PathVariable Long id) throws Exception {
         if(appointmentService.findById(id) == null){
 
@@ -49,11 +57,14 @@ public class AppointmentController {
         appointmentService.delete(id);
     }
     @GetMapping("/appointment")
+    @ApiOperation("Muestra todos los turnos")
     public List<Appointment> findAll(){
         return appointmentService.findAll();
     }
 
     @PostMapping("/appointment/{id}")
+    @ApiOperation("Agrega un servicio a un turno")
+    @ApiParam("Long id,  TypeService typeService")
     public ResponseEntity<?> addTypeService(@PathVariable Long id, @RequestBody TypeService typeService){
         if(appointmentService.findById(id) == null){
             return ResponseEntity.badRequest().body("No se encontro el id ingresado");
@@ -63,6 +74,8 @@ public class AppointmentController {
     }
 
     @DeleteMapping("/appointment/deleteTypeService/{id}/{idRemove}")
+    @ApiOperation("borra el servicio de un turno")
+    @ApiParam(" Long id,   Long idRemove")
     public ResponseEntity<?> deleteTypeService(@PathVariable Long id, @PathVariable Long idRemove) throws FileNotFoundException {
         if(appointmentService.findById(id) == null){
             return ResponseEntity.badRequest().body("No se encontro el id ingresado");
@@ -72,6 +85,8 @@ public class AppointmentController {
     }
 
     @GetMapping("/appointment/precioFinal/{id}")
+    @ApiOperation("Muestra el total a pagar de un turno de un cliente")
+    @ApiParam("id")
     public String precioTotal(@PathVariable Long id){
 
         return "El precio total es : " + appointmentService.total(id);
@@ -80,6 +95,7 @@ public class AppointmentController {
 
 
     @GetMapping("/appointment/turnos")
+    @ApiOperation("Muestra la fecha del turno y cuantos dias faltan")
     public List<AppointmentDto> diasParaTurnos(){
 
         return appointmentService.turnos();

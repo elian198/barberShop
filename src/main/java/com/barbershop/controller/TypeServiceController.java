@@ -2,6 +2,8 @@ package com.barbershop.controller;
 
 import com.barbershop.entites.TypeService;
 import com.barbershop.service.impl.TypeServiceImpl;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,8 @@ public class TypeServiceController {
     }
 
     @PostMapping("/typeService")
+    @ApiOperation("Agrega servicio")
+    @ApiParam("TypeService typeservice")
     public ResponseEntity<?> save(@RequestBody TypeService typeService) throws FileNotFoundException {
         if(typeService == null){
             return ResponseEntity.badRequest().body("No se puede enviar campos vacios");
@@ -30,6 +34,8 @@ public class TypeServiceController {
         return ResponseEntity.ok("Usuario creado");
     }
     @PutMapping("/typeService")
+    @ApiOperation("Actualiza un servicio")
+    @ApiParam("TypeService typeservice")
     public ResponseEntity<?> update(@RequestBody TypeService  typeService) throws Exception {
         if(typeServiceimpl.findById(typeService.getId()) == null){
             return ResponseEntity.badRequest().body("El id no se encontro");
@@ -39,6 +45,8 @@ public class TypeServiceController {
     }
 
     @DeleteMapping("/typeService/{id}")
+    @ApiOperation("Borra un servicio")
+    @ApiParam("Long id")
     public ResponseEntity<?> delete(@PathVariable Long id) throws Exception {
         if(typeServiceimpl.findById(id) == null){
             return ResponseEntity.badRequest().body("El ID no puede ser NULL");
@@ -48,6 +56,7 @@ public class TypeServiceController {
 
     }
     @GetMapping("/typeService")
+    @ApiOperation("Muestra los servicios")
     public List<TypeService> findAll(){
         return typeServiceimpl.findAll();
     }
