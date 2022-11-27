@@ -1,7 +1,6 @@
 package com.barbershop.controller;
 
 
-import com.barbershop.DTO.CustomerDto;
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
 import com.barbershop.service.impl.CustomerServiceImpl;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @RestController
@@ -47,19 +47,28 @@ public class CustomerController {
         return customerService.findAll();
     }
 
-    @PostMapping( value = "/customer/appoint", params = "email")
-    public ResponseEntity<?> findAppoint(@RequestParam String email){
+    @PostMapping( value = "/customer/", params = "email")
+    public ResponseEntity<?> findByEmail(@RequestParam String email){
 
         return ResponseEntity.ok(  customerService.findByEmail(email));
     }
     @PostMapping("/customer/addAppointment/{id}")
-    public void addAppointment(@PathVariable Long id , @RequestBody Appointment appointment){
+    public ResponseEntity<String> addAppointment(@PathVariable Long id , @RequestBody Appointment appointment) throws FileNotFoundException {
+
+        if(customerService.findById(id) == null){
+            return ResponseEntity.badRequest().body("El id  no existe");
+        }
         customerService.addAppointment(id, appointment);
+        return ResponseEntity.ok("TURNO " + appointment.getId() + " AGREGADO CORRECTAMENTE");
+    }
+    @DeleteMapping("/customer/deleteAppointment/{id}/{idAppointment}")
+    public  ResponseEntity<String> deleteAppointment(@PathVariable Long id, @PathVariable Long idAppointment) throws FileNotFoundException {
+        if(customerService.findById(id) == null){
+            return ResponseEntity.badRequest().body("No existe el id");
+        }
+        customerService.deleteAppointment(id, idAppointment);
+        return ResponseEntity.ok("EL turno: " + idAppointment + " del cliente: " + customerService.findById(id) + " Eliminado correctamente") ;
     }
 
-    @GetMapping("/customer/appoint/{id}")
-    public CustomerDto mostrarFindById(@PathVariable Long id){
 
-        return customerService.lookAppointMent(id);
-    }
 }

@@ -1,5 +1,6 @@
 package com.barbershop.service;
 
+import com.barbershop.DTO.AppointmentDto;
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
 import com.barbershop.entites.TypeService;
@@ -16,6 +17,7 @@ public interface AppointmentService {
    Optional<Appointment> findById(Long id);
    void delete(Long id) throws Exception;
 
+   List<AppointmentDto> turnos();
    void addTypeService(Long id, TypeService typeService);
 
    void deleteTypeService(Long id, Long idRemove) throws FileNotFoundException;

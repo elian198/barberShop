@@ -1,5 +1,6 @@
 package com.barbershop.controller;
 
+import com.barbershop.DTO.AppointmentDto;
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Employee;
 import com.barbershop.entites.TypeService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -70,10 +72,17 @@ public class AppointmentController {
     }
 
     @GetMapping("/appointment/precioFinal/{id}")
-    public String preciotoal(@PathVariable Long id){
+    public String precioTotal(@PathVariable Long id){
 
         return "El precio total es : " + appointmentService.total(id);
     }
 
+
+
+    @GetMapping("/appointment/turnos")
+    public List<AppointmentDto> diasParaTurnos(){
+
+        return appointmentService.turnos();
+    }
 
 }

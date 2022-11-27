@@ -2,19 +2,26 @@ package com.barbershop.service.impl;
 
 import com.barbershop.entites.Customer;
 import com.barbershop.entites.Employee;
+import com.barbershop.exception.EmployeeNoExists;
 import com.barbershop.repository.EmployeeRepository;
 import com.barbershop.service.EmployeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EmployeeServiceImpl implements EmployeService {
+public class EmployeeServiceImpl implements EmployeService , UserDetailsService {
 
     @Autowired
-    EmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
+
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
@@ -50,7 +57,6 @@ public class EmployeeServiceImpl implements EmployeService {
 
           //throw new EmailExistEmployee();
         }
-        employee.setSoft_delete(false);
         employeeRepository.save(employee);
     }
 
@@ -74,8 +80,18 @@ public class EmployeeServiceImpl implements EmployeService {
 
     @Override
     public void addCustomer(Long id, Customer customer) {
+      if(employeeRepository.existsById(id)){
+         Employee employee = employeeRepository.findById(id).get();
 
+      }
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws EmployeeNoExists {
+        com.barbershop.entites.Employee employee = employeeRepository.findByUsername(username)
+                .orElseThrow(() -> new EmployeeNoExists(HttpStatus.NOT_FOUND, " El usuario no existe!!!"));
 
+        return new org.springframework.security.core.userdetails.User(
+                employee.getFirst_name(), employee.getPassword(),new ArrayList<>());
+    }
 }

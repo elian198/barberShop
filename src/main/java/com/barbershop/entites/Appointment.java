@@ -1,7 +1,6 @@
 package com.barbershop.entites;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,8 +35,7 @@ public class Appointment {
     @ManyToOne()
     private Customer customer;
 
-    public Appointment() {
-    }
+    public Appointment() { }
 
     public Long getId() {
         return id;
@@ -95,7 +93,6 @@ public class Appointment {
                 ", date=" + date +
                 ", duration=" + duration +
                 ", typeService=" + typeService +
-                ", customer=" + customer +
                 '}';
     }
 }

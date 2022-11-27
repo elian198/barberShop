@@ -1,9 +1,19 @@
 package com.barbershop.controller;
 
 import com.barbershop.entites.Employee;
+import com.barbershop.security.jwt.JwtTokenUtil;
+import com.barbershop.security.payload.JwtPayload;
+import com.barbershop.security.payload.LoginPayload;
+import com.barbershop.security.payload.RegisterPayload;
 import com.barbershop.service.impl.EmployeeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,25 +24,43 @@ public class EmployeeController {
     @Autowired
     EmployeeServiceImpl employeeService;
 
-    public EmployeeController(EmployeeServiceImpl employeeService) {
+    private final AuthenticationManager authManager;
+
+    private final JwtTokenUtil jwtTokenUtil;
+
+    private final PasswordEncoder passwordEncoder;
+
+    public EmployeeController(EmployeeServiceImpl employeeService, AuthenticationManager authManager, JwtTokenUtil jwtTokenUtil, PasswordEncoder passwordEncoder) {
         this.employeeService = employeeService;
+        this.authManager = authManager;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/employee")
-    public ResponseEntity<?> save(@RequestBody Employee employee){
-        if(employee == null){
+    @PostMapping("/register")
+    public ResponseEntity<?> save(@RequestBody RegisterPayload registerPayload){
+        if(registerPayload == null){
             return ResponseEntity.badRequest().body("No se puede enviar campos vacios");
         }
+
+
+        if(employeeService.findByEmail(registerPayload.getEmail())!= null){
+            return ResponseEntity.badRequest().body("EL email ya existe");
+        }
+        registerPayload.setPassword(passwordEncoder.encode(registerPayload.getPassword()));
+        Employee employee = registerPayload.convertToEntities();
         employeeService.Save(employee);
         return ResponseEntity.ok("Usuario creado");
     }
-    @PutMapping("/employee")
-    public ResponseEntity<?> update(@RequestBody Employee employee){
-        if(employeeService.findById(employee.getId()) == null){
-            return ResponseEntity.badRequest().body("El id no se encontro");
-        }
-        employeeService.update(employee);
-        return ResponseEntity.ok("  Usuario  " + employee.getEmail() + " Actualizado");
+    @PostMapping("/login")
+    public ResponseEntity<JwtPayload> update(@RequestBody LoginPayload loginPayload){
+        Authentication authentication = authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginPayload.getFirst_name(), loginPayload.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtTokenUtil.generateJwtToken(authentication);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return ResponseEntity.ok(new JwtPayload(jwt));
     }
 
     @DeleteMapping("/employee/{id}")

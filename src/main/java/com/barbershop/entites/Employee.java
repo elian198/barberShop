@@ -4,13 +4,12 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "Employees")
 @SQLDelete(sql = "UPDATE employees SET soft_delete=true WHERE id = ?")
 @Where(clause = "soft_delete = false")
+
 public class Employee {
 
     @Id
@@ -29,8 +28,10 @@ public class Employee {
     @Column(name = "PASSWORD")
     private String password;
 
-    @Column(name = "SOFT_DELETE")
+    @Column( name = "SOFT_DELETE")
     private Boolean soft_delete;
+
+
     public Employee() { }
 
     public Long getId() {
