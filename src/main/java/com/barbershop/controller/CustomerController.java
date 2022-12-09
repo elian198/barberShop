@@ -3,6 +3,8 @@ package com.barbershop.controller;
 
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
+import com.barbershop.service.email.EmailService;
+import com.barbershop.service.impl.AppointmentServiceImpl;
 import com.barbershop.service.impl.CustomerServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,8 +21,16 @@ public class CustomerController {
     @Autowired
     CustomerServiceImpl customerService;
 
-    public CustomerController(CustomerServiceImpl customerService) {
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private AppointmentServiceImpl appointmentService;
+
+    public CustomerController(CustomerServiceImpl customerService, EmailService emailService, AppointmentServiceImpl appointmentService) {
         this.customerService = customerService;
+        this.emailService = emailService;
+        this.appointmentService = appointmentService;
     }
 
     @PostMapping("/customer")
@@ -67,8 +77,10 @@ public class CustomerController {
         if(customerService.findById(id) == null){
             return ResponseEntity.badRequest().body("El id  no existe");
         }
+        Customer customer = customerService.findById(id);
+        emailService.send("elianpareja5@gmail.com",customer.getEmail(), "Turno", emailService.Turno(customer.getFirst_name(), appointment.getDate(), "turno"));
         customerService.addAppointment(id, appointment);
-        return ResponseEntity.ok("TURNO " + appointment.getId() + " AGREGADO CORRECTAMENTE");
+        return ResponseEntity.ok("TURNO AGREGADO CORRECTAMENTE");
     }
     @DeleteMapping("/customer/deleteAppointment/{id}/{idAppointment}")
     @ApiOperation("Eliminar un turno de un cliente")
@@ -77,9 +89,10 @@ public class CustomerController {
         if(customerService.findById(id) == null){
             return ResponseEntity.badRequest().body("No existe el id");
         }
+        Customer customer = customerService.findById(id);
+        emailService.send("elianpareja5@gmail.com",customer.getEmail(), "Turno cancelado", emailService.Turno(customer.getFirst_name(), appointmentService.findById(idAppointment).get().getDate(), "cancelado"));
         customerService.deleteAppointment(id, idAppointment);
         return ResponseEntity.ok("EL turno: " + idAppointment + " del cliente: " + customerService.findById(id) + " Eliminado correctamente") ;
     }
-
 
 }
