@@ -1,5 +1,7 @@
 package com.barbershop.entites;
 
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -7,6 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Appointment")
+@Where(clause = "local_date >= NOW()")
 public class Appointment {
 
     @Id
@@ -69,20 +72,20 @@ public class Appointment {
         this.duration = duration;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
     public Set<TypeService> getTypeService() {
         return typeService;
     }
 
     public void setTypeService(Set<TypeService> typeService) {
         this.typeService = typeService;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     @Override
@@ -93,6 +96,7 @@ public class Appointment {
                 ", date=" + date +
                 ", duration=" + duration +
                 ", typeService=" + typeService +
+                ", customer=" + customer +
                 '}';
     }
 }

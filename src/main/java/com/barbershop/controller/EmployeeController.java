@@ -1,10 +1,12 @@
 package com.barbershop.controller;
 
+import com.barbershop.DTO.ResetPasswordDto;
 import com.barbershop.entites.Employee;
 import com.barbershop.security.jwt.JwtTokenUtil;
 import com.barbershop.security.payload.JwtPayload;
 import com.barbershop.security.payload.LoginPayload;
 import com.barbershop.security.payload.RegisterPayload;
+import com.barbershop.service.email.EmailService;
 import com.barbershop.service.impl.EmployeeServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -18,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 @RestController
@@ -26,11 +29,17 @@ public class EmployeeController {
     @Autowired
     EmployeeServiceImpl employeeService;
 
+    @Autowired
+    EmailService emailService;
+
     private final AuthenticationManager authManager;
 
     private final JwtTokenUtil jwtTokenUtil;
 
     private final PasswordEncoder passwordEncoder;
+
+    private String codigo;
+    private String email;
 
     public EmployeeController(EmployeeServiceImpl employeeService, AuthenticationManager authManager, JwtTokenUtil jwtTokenUtil, PasswordEncoder passwordEncoder) {
         this.employeeService = employeeService;
@@ -59,7 +68,7 @@ public class EmployeeController {
     @PostMapping("/login")
     @ApiOperation("Comprueba que exista el usuario enviado, si esta todo ok devulve un token, que es el que nos va a servir para navegar por las diferentes end points")
     @ApiParam("LoginPayload loginPayload")
-    public ResponseEntity<JwtPayload> update(@RequestBody LoginPayload loginPayload){
+    public ResponseEntity<JwtPayload> login(@RequestBody LoginPayload loginPayload){
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginPayload.getFirst_name(), loginPayload.getPassword()));
 
@@ -83,6 +92,37 @@ public class EmployeeController {
         return employeeService.findAll();
     }
 
+    @PostMapping("/login/password/{email}")
+    public ResponseEntity forguetPassowrd(@PathVariable String email) throws MessagingException {
+
+        if(employeeService.findByEmail(email) == null){
+            return ResponseEntity.badRequest().body("El email ingresado no existe");
+        }
+        Employee employee1 = employeeService.findByEmail(email);
+        this.email = email;
+        codigo = employeeService.aleatorio();
+
+        emailService.sendWithAttach("elianpareja5@gmail.com", employee1.getEmail(), "RESETEO DE PASSWORD", emailService.codigo(employee1.getFirst_name(), codigo) );
+        return ResponseEntity.ok("Codigo enviado a su email");
+    }
+
+    @PostMapping("/login/resetPassword")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto){
+
+        if(resetPasswordDto.getPassword().equalsIgnoreCase(resetPasswordDto.getRepeatPassword())) {
+            if (resetPasswordDto.getCodigo().equalsIgnoreCase(codigo)) {
+                Employee employee = employeeService.findByEmail(email);
+                employee.setPassword(passwordEncoder.encode(resetPasswordDto.getPassword()));
+                employeeService.update(employee);
+            } else {
+                return ResponseEntity.badRequest().body("El codigo ingresado no es correcto!!");
+            }
+            return ResponseEntity.ok("Contraseña cambiada");
+        }
+            return ResponseEntity.badRequest().body("Las contraseñas no coinciden!!");
+
+
+    }
 
 }
 

@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -39,6 +41,12 @@ public class CustomerController {
     public ResponseEntity<?> save(@RequestBody Customer customer){
         if(customer == null){
             return ResponseEntity.badRequest().body("No se puede enviar campos vacios");
+        }
+        if(customerService.findByEmail(customer.getEmail()) != null){
+            return ResponseEntity.badRequest().body("El email ya existe!!\nElija otro por favor.");
+        }
+        if(customerService.findByPhone(customer.getPhone())){
+            return ResponseEntity.badRequest().body("El numero de telfono ya existe!!!\nElija otro por favor");
         }
         customerService.save(customer);
         return ResponseEntity.ok("Cliente creado");
@@ -72,13 +80,17 @@ public class CustomerController {
     @PostMapping("/customer/addAppointment/{id}")
     @ApiOperation("Agrega turnos apartir del id de un cliente")
     @ApiParam("id, Appoinment")
-    public ResponseEntity<String> addAppointment(@PathVariable Long id , @RequestBody Appointment appointment) throws FileNotFoundException {
+    public ResponseEntity<String> addAppointment(@PathVariable Long id , @RequestBody Appointment appointment) throws FileNotFoundException, MessagingException {
 
         if(customerService.findById(id) == null){
             return ResponseEntity.badRequest().body("El id  no existe");
         }
+        if(appointment.getDate().compareTo(LocalDate.now()) < 0){
+            System.out.println(appointment.getDate().compareTo(LocalDate.now()));
+           return ResponseEntity.badRequest().body("La fecha del turno ya paso!!\nFecha actual: " +LocalDate.now());
+        }
         Customer customer = customerService.findById(id);
-        emailService.send("elianpareja5@gmail.com",customer.getEmail(), "Turno", emailService.Turno(customer.getFirst_name(), appointment.getDate(), "turno"));
+        emailService.sendWithAttach("elianpareja5@gmail.com",customer.getEmail(), "Turno", emailService.Turno(customer.getFirst_name(), appointment.getDate(), "turno"));
         customerService.addAppointment(id, appointment);
         return ResponseEntity.ok("TURNO AGREGADO CORRECTAMENTE");
     }
@@ -93,6 +105,11 @@ public class CustomerController {
         emailService.send("elianpareja5@gmail.com",customer.getEmail(), "Turno cancelado", emailService.Turno(customer.getFirst_name(), appointmentService.findById(idAppointment).get().getDate(), "cancelado"));
         customerService.deleteAppointment(id, idAppointment);
         return ResponseEntity.ok("EL turno: " + idAppointment + " del cliente: " + customerService.findById(id) + " Eliminado correctamente") ;
+    }
+
+    @GetMapping("/customer/sendMessage")
+    public void sendMessage() throws MessagingException {
+        customerService.sendMessage();
     }
 
 }

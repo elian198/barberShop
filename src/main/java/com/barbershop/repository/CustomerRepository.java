@@ -11,4 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Query(value = "SELECT * FROM customer WHERE customer.email = :filtro" ,nativeQuery = true)
     Customer findByEmail(@Param("filtro") String filtro);
+
+    @Query(value = "SELECT * FROM customer WHERE customer.phone = :filtro" ,nativeQuery = true)
+    Customer findByPhone(@Param("filtro") Integer filtro);
 }

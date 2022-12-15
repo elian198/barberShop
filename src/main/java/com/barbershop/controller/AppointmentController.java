@@ -34,7 +34,7 @@ public class AppointmentController {
             return ResponseEntity.badRequest().body("No se puede enviar campos vacios");
         }
         appointmentService.save(appointment);
-        return ResponseEntity.ok("Usuario creado");
+        return ResponseEntity.ok("TURNO AGREGADO");
     }
     @PutMapping("/appointment")
     @ApiOperation("Actualiza un turno")
@@ -44,7 +44,7 @@ public class AppointmentController {
             return ResponseEntity.badRequest().body("El id no se encontro");
         }
         appointmentService.update(appointment);
-        return ResponseEntity.ok("  Usuario " + appointment.getId() + " Actualizado");
+        return ResponseEntity.ok("  Turno" + appointment.getId() + " Actualizado");
     }
 
     @DeleteMapping("/appointment/{id}")
