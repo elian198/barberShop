@@ -3,6 +3,8 @@ package com.barbershop.controller;
 
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
+import com.barbershop.service.email.EmailService;
+import com.barbershop.service.impl.AppointmentServiceImpl;
 import com.barbershop.service.impl.CustomerServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -10,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -19,8 +23,16 @@ public class CustomerController {
     @Autowired
     CustomerServiceImpl customerService;
 
-    public CustomerController(CustomerServiceImpl customerService) {
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private AppointmentServiceImpl appointmentService;
+
+    public CustomerController(CustomerServiceImpl customerService, EmailService emailService, AppointmentServiceImpl appointmentService) {
         this.customerService = customerService;
+        this.emailService = emailService;
+        this.appointmentService = appointmentService;
     }
 
     @PostMapping("/customer")
@@ -29,6 +41,12 @@ public class CustomerController {
     public ResponseEntity<?> save(@RequestBody Customer customer){
         if(customer == null){
             return ResponseEntity.badRequest().body("No se puede enviar campos vacios");
+        }
+        if(customerService.findByEmail(customer.getEmail()) != null){
+            return ResponseEntity.badRequest().body("El email ya existe!!\nElija otro por favor.");
+        }
+        if(customerService.findByPhone(customer.getPhone())){
+            return ResponseEntity.badRequest().body("El numero de telfono ya existe!!!\nElija otro por favor");
         }
         customerService.save(customer);
         return ResponseEntity.ok("Cliente creado");
@@ -62,13 +80,19 @@ public class CustomerController {
     @PostMapping("/customer/addAppointment/{id}")
     @ApiOperation("Agrega turnos apartir del id de un cliente")
     @ApiParam("id, Appoinment")
-    public ResponseEntity<String> addAppointment(@PathVariable Long id , @RequestBody Appointment appointment) throws FileNotFoundException {
+    public ResponseEntity<String> addAppointment(@PathVariable Long id , @RequestBody Appointment appointment) throws FileNotFoundException, MessagingException {
 
         if(customerService.findById(id) == null){
             return ResponseEntity.badRequest().body("El id  no existe");
         }
+        if(appointment.getDate().compareTo(LocalDate.now()) < 0){
+            System.out.println(appointment.getDate().compareTo(LocalDate.now()));
+           return ResponseEntity.badRequest().body("La fecha del turno ya paso!!\nFecha actual: " +LocalDate.now());
+        }
+        Customer customer = customerService.findById(id);
+        emailService.sendWithAttach("elianpareja5@gmail.com",customer.getEmail(), "Turno", emailService.Turno(customer.getFirst_name(), appointment.getDate(), "turno"));
         customerService.addAppointment(id, appointment);
-        return ResponseEntity.ok("TURNO " + appointment.getId() + " AGREGADO CORRECTAMENTE");
+        return ResponseEntity.ok("TURNO AGREGADO CORRECTAMENTE");
     }
     @DeleteMapping("/customer/deleteAppointment/{id}/{idAppointment}")
     @ApiOperation("Eliminar un turno de un cliente")
@@ -77,9 +101,15 @@ public class CustomerController {
         if(customerService.findById(id) == null){
             return ResponseEntity.badRequest().body("No existe el id");
         }
+        Customer customer = customerService.findById(id);
+        emailService.send("elianpareja5@gmail.com",customer.getEmail(), "Turno cancelado", emailService.Turno(customer.getFirst_name(), appointmentService.findById(idAppointment).get().getDate(), "cancelado"));
         customerService.deleteAppointment(id, idAppointment);
         return ResponseEntity.ok("EL turno: " + idAppointment + " del cliente: " + customerService.findById(id) + " Eliminado correctamente") ;
     }
 
+    @GetMapping("/customer/sendMessage")
+    public void sendMessage() throws MessagingException {
+        customerService.sendMessage();
+    }
 
 }

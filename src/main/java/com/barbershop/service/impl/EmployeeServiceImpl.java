@@ -94,4 +94,14 @@ public class EmployeeServiceImpl implements EmployeService , UserDetailsService 
         return new org.springframework.security.core.userdetails.User(
                 employee.getFirst_name(), employee.getPassword(),new ArrayList<>());
     }
+
+    public String aleatorio(){
+        String res = "";
+        for(int i = 1; i <=6 ; i++){
+            int num = (int) (Math.random()* (('z'-'a')+1))+'a';
+            char letra = (char)num;
+            res += letra;
+        }
+        return res;
+    }
 }

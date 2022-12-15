@@ -8,11 +8,14 @@ import com.barbershop.exception.EmailExist;
 import com.barbershop.exception.NoExist;
 import com.barbershop.repository.CustomerRepository;
 import com.barbershop.service.CustomerService;
+import com.barbershop.service.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -23,6 +26,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private AppointmentServiceImpl appointmentService;
+
+    @Autowired
+    EmailService emailService;
 
     public CustomerServiceImpl(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
@@ -93,5 +99,23 @@ public class CustomerServiceImpl implements CustomerService {
             return customerRepository.findById(id).get();
         }
          throw  new FileNotFoundException("No existe el id");
+    }
+
+    public Boolean findByPhone(Integer phone){
+        if(customerRepository.findByPhone(phone)!= null){
+            return true;
+        }
+        return false;
+    }
+
+    public void sendMessage() throws MessagingException {
+        for(Customer listCustomer: customerRepository.findAll()){
+            for(Appointment listAppointment : listCustomer.getAppointment()){
+                if(appointmentService.total(listAppointment.getId()) >0  ) {
+                    if(listAppointment.getDate().compareTo(LocalDate.now()) >0 && listAppointment.getDate().compareTo(LocalDate.now()) <4);
+                    emailService.sendWithAttach("elianpareja5@gmail.com", listCustomer.getEmail(), "Aviso turno pendiente", emailService.avisoTurnoPendiente(listCustomer.getFirst_name(), listCustomer.getLast_name(), listAppointment.getDate(), appointmentService.total(listAppointment.getId())));
+                }
+            }
+        }
     }
 }
