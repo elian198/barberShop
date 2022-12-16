@@ -4,6 +4,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +22,9 @@ public class Appointment {
 
     @Column(name = "LOCAL_DATE")
     private LocalDate date;
+
+    @Column(name = "TIME")
+    private LocalTime time;
 
     @Column(name = "DURATION")
     private Integer duration;
@@ -88,12 +92,21 @@ public class Appointment {
         this.customer = customer;
     }
 
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
     @Override
     public String toString() {
         return "Appointment{" +
                 "id=" + id +
                 ", description='" + description + '\'' +
                 ", date=" + date +
+                ", time=" + time +
                 ", duration=" + duration +
                 ", typeService=" + typeService +
                 ", customer=" + customer +
