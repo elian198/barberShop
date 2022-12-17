@@ -42,5 +42,15 @@ public class ConvertDto {
 
     }
 
+    public List<Time> convertirTime ( @NotNull List<Appointment> appointment) {
+        List<Time> appointmentTime = new ArrayList<>();
 
+
+        for (Appointment list : appointment) {
+            appointmentTime.add(new Time(list.getTime()));
+        }
+
+
+        return appointmentTime;
+    }
 }

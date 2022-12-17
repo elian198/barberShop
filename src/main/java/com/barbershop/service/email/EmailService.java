@@ -28,12 +28,12 @@ public class EmailService {
             mailSender.send(message);
         }
 
-        public void sendWithAttach(String from, String to, String subject,
+        public void sendWithAttach( String to, String subject,
                                    String text
                                ) throws MessagingException {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(from);
+            helper.setFrom(System.getenv("EMAIL"));
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(html(text), true);
