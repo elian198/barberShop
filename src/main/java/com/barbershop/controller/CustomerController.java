@@ -1,6 +1,5 @@
 package com.barbershop.controller;
 
-
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.Customer;
 import com.barbershop.service.email.EmailService;
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -89,8 +90,22 @@ public class CustomerController {
             System.out.println(appointment.getDate().compareTo(LocalDate.now()));
            return ResponseEntity.badRequest().body("La fecha del turno ya paso!!\nFecha actual: " +LocalDate.now());
         }
+
+       int minutes = (int) ChronoUnit.MINUTES.between(appointment.getTime(),LocalTime.of(9,00)) * (-1);
+       if(minutes > (60 * 12)  ){
+         return   ResponseEntity.badRequest().body("Los turnos no pueden ser fuera de horario\nHorarios de 9hs a 21hs");
+       }
+
+        String dia = String.valueOf(appointment.getDate().getDayOfWeek());
+        if(dia.equalsIgnoreCase("monday")){
+           return ResponseEntity.badRequest().body("LOS DIAS LUNES NO ABRIMOS!!");
+       }
+
         Customer customer = customerService.findById(id);
-        emailService.sendWithAttach("elianpareja5@gmail.com",customer.getEmail(), "Turno", emailService.Turno(customer.getFirst_name(), appointment.getDate(), "turno"));
+        if(appointmentService.existTurn(appointment.getDate(), appointment.getTime())){
+            return ResponseEntity.badRequest().body("Turno ocupado elija otro\nTurnos disponibles del dia " + appointment.getDate() + " son : \n" + appointmentService.shirt(appointment.getDate() ));
+        }
+        emailService.sendWithAttach(customer.getEmail(), "Turno", emailService.Turno(customer.getFirst_name(), appointment.getDate(),appointment.getTime(), "turno"));
         customerService.addAppointment(id, appointment);
         return ResponseEntity.ok("TURNO AGREGADO CORRECTAMENTE");
     }
@@ -102,7 +117,7 @@ public class CustomerController {
             return ResponseEntity.badRequest().body("No existe el id");
         }
         Customer customer = customerService.findById(id);
-        emailService.send("elianpareja5@gmail.com",customer.getEmail(), "Turno cancelado", emailService.Turno(customer.getFirst_name(), appointmentService.findById(idAppointment).get().getDate(), "cancelado"));
+        emailService.send("elianpareja5@gmail.com",customer.getEmail(), "Turno cancelado", emailService.Turno(customer.getFirst_name(), appointmentService.findById(idAppointment).get().getDate(),appointmentService.findById(idAppointment).get().getTime(), "cancelado"));
         customerService.deleteAppointment(id, idAppointment);
         return ResponseEntity.ok("EL turno: " + idAppointment + " del cliente: " + customerService.findById(id) + " Eliminado correctamente") ;
     }

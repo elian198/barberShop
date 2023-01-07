@@ -102,7 +102,7 @@ public class EmployeeController {
         this.email = email;
         codigo = employeeService.aleatorio();
 
-        emailService.sendWithAttach("elianpareja5@gmail.com", employee1.getEmail(), "RESETEO DE PASSWORD", emailService.codigo(employee1.getFirst_name(), codigo) );
+        emailService.sendWithAttach( employee1.getEmail(), "RESETEO DE PASSWORD", emailService.codigo(employee1.getFirst_name(), codigo) );
         return ResponseEntity.ok("Codigo enviado a su email");
     }
 

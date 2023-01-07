@@ -2,9 +2,7 @@ package com.barbershop.controller;
 
 import com.barbershop.DTO.AppointmentDto;
 import com.barbershop.entites.Appointment;
-import com.barbershop.entites.Employee;
 import com.barbershop.entites.TypeService;
-import com.barbershop.service.AppointmentService;
 import com.barbershop.service.impl.AppointmentServiceImpl;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -13,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -50,11 +47,9 @@ public class AppointmentController {
     @DeleteMapping("/appointment/{id}")
     @ApiOperation("Borra un turno")
     @ApiParam("Long id")
-    public void delete(@PathVariable Long id) throws Exception {
-        if(appointmentService.findById(id) == null){
-
-        }
+    public ResponseEntity<?> delete(@PathVariable Long id) throws Exception {
         appointmentService.delete(id);
+        return ResponseEntity.ok("appointment eliminado");
     }
     @GetMapping("/appointment")
     @ApiOperation("Muestra todos los turnos")

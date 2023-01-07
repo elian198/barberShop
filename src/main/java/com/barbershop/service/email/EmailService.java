@@ -8,6 +8,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 public class EmailService {
@@ -27,12 +28,12 @@ public class EmailService {
             mailSender.send(message);
         }
 
-        public void sendWithAttach(String from, String to, String subject,
+        public void sendWithAttach( String to, String subject,
                                    String text
                                ) throws MessagingException {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(from);
+            helper.setFrom(System.getenv("EMAIL"));
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(html(text), true);
@@ -44,26 +45,27 @@ public class EmailService {
                     "creado correctamente.<hr>Saludos cordiales de parte de BarberShop</p>";
         }
 
-        public String avisoPocoDiasTurno(String nombre , LocalDate dia){
-            return  "<h1>Hola que tal  "+ nombre + "!!</h1><br><p> queriamos avisarle que tiene un tueno pendiente el dia <span>" + dia + "</span><hr>"+
+        public String avisoPocoDiasTurno(String nombre , LocalDate dia, LocalTime time){
+            return  "<h1>Hola que tal  "+ nombre + "!!</h1><br><p> queriamos avisarle que tiene un tueno pendiente el dia <span>" + dia + "</span><br>A las: <span class='time'>" + time + "hs</span><hr>"+
                     "Gracias por elegirnos.BarberShop</p>";
 
         }
 
-          public String Turno(String nombre , LocalDate dia, String estado){
+          public String Turno(String nombre , LocalDate dia, LocalTime time, String estado){
              if(estado == "turno") {
                  return
-                       " <h1>Hola que tal " + nombre + "!</h1><p> Queriamos avisarle que tiene un turno pendiente el dia <span> " + dia + "</span>.<hr>"
+                       " <h1>Hola que tal " + nombre + "!</h1><p> Queriamos avisarle que tiene un turno pendiente el dia <span> " + dia + "</span><br>A las: <span class='time'>"+ time + "hs</span><hr>"
                          + "Gracias por Elegirnos de parte de BarberShop </p>";
 
              } else {
-                 return "<h1>Hola que tal  " + nombre + "!</h1><p> Queriamos avisarle que el turno del dia:  <span>" + dia + "</span> fue cancelado.<hr>"
+                 return "<h1>Hola que tal  " + nombre + "!</h1><p> Queriamos avisarle que el turno del dia:  <span>" + dia + "</span><br>A las: <span class='time'>"+ time +"hs</span> fue cancelado.<hr>"
                          + " Gracias por Elegirnos de parte de BarberShop.</p>";
                }
             }
-            public String avisoTurnoPendiente(String firstName ,String lastName, LocalDate dia, Double total){
+            public String avisoTurnoPendiente(String firstName ,String lastName, LocalDate dia,LocalTime time, Double total){
                return "<h1>Hola que tal " + firstName + " " + lastName + "</h1> <br>" +
                        "<p> Queriamos informale que tiene pendiente un turno el dia: <span>" + dia + ".</span> <br>"
+                       + "A las: <span class='time'>" + time + "hs</span><br>"
                        + "El total del servicio es: <span>$" + total + "</span><hr>"
                        + "Muchas gracias por elegirnos, de parte de barberShop </p>";
 
@@ -83,7 +85,7 @@ public class EmailService {
                         "div {backgraound : #A9F5F2; }" +
                         "body {text-align  : center ; }" +
                         "span {color  : #5F04B4 ; }" +
-
+                        ".time  {color : white; }" +
                         "</style> <body>" +
                         "<h1> BARBER SHOP</h1>" +
                         "<img src='https://www.shutterstock.com/image-vector/vintage-barbershop-sign-260nw-1176772093.jpg' /> " +

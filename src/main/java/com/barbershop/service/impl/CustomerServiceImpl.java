@@ -113,7 +113,7 @@ public class CustomerServiceImpl implements CustomerService {
             for(Appointment listAppointment : listCustomer.getAppointment()){
                 if(appointmentService.total(listAppointment.getId()) >0  ) {
                     if(listAppointment.getDate().compareTo(LocalDate.now()) >0 && listAppointment.getDate().compareTo(LocalDate.now()) <4);
-                    emailService.sendWithAttach("elianpareja5@gmail.com", listCustomer.getEmail(), "Aviso turno pendiente", emailService.avisoTurnoPendiente(listCustomer.getFirst_name(), listCustomer.getLast_name(), listAppointment.getDate(), appointmentService.total(listAppointment.getId())));
+                    emailService.sendWithAttach( listCustomer.getEmail(), "Aviso turno pendiente", emailService.avisoTurnoPendiente(listCustomer.getFirst_name(), listCustomer.getLast_name(), listAppointment.getDate(),listAppointment.getTime(), appointmentService.total(listAppointment.getId())));
                 }
             }
         }
