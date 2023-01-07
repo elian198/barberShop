@@ -44,7 +44,7 @@ public class WebServiceConfig  extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/employee/**").permitAll()
+                .authorizeRequests()
                 .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers("/register").permitAll()
@@ -56,6 +56,7 @@ public class WebServiceConfig  extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(employeeService).passwordEncoder(passwordEncoder());
+
     }
 
 

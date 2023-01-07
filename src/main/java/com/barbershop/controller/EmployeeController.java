@@ -68,13 +68,13 @@ public class EmployeeController {
     @PostMapping("/login")
     @ApiOperation("Comprueba que exista el usuario enviado, si esta todo ok devulve un token, que es el que nos va a servir para navegar por las diferentes end points")
     @ApiParam("LoginPayload loginPayload")
-    public ResponseEntity<JwtPayload> login(@RequestBody LoginPayload loginPayload){
+    public ResponseEntity<JwtPayload> login(@RequestBody LoginPayload loginPayload) throws MessagingException {
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginPayload.getFirst_name(), loginPayload.getPassword()));
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtTokenUtil.generateJwtToken(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
         return ResponseEntity.ok(new JwtPayload(jwt));
     }
 

@@ -55,7 +55,7 @@ public class EmailService {
              if(estado == "turno") {
                  return
                        " <h1>Hola que tal " + nombre + "!</h1><p> Queriamos avisarle que tiene un turno pendiente el dia <span> " + dia + "</span><br>A las: <span class='time'>"+ time + "hs</span><hr>"
-                         + "Gracias por Elegirnos de parte de BarberShop </p>";
+                               + "Gracias por Elegirnos de parte de BarberShop </p>";
 
              } else {
                  return "<h1>Hola que tal  " + nombre + "!</h1><p> Queriamos avisarle que el turno del dia:  <span>" + dia + "</span><br>A las: <span class='time'>"+ time +"hs</span> fue cancelado.<hr>"
@@ -89,7 +89,7 @@ public class EmailService {
                         "</style> <body>" +
                         "<h1> BARBER SHOP</h1>" +
                         "<img src='https://www.shutterstock.com/image-vector/vintage-barbershop-sign-260nw-1176772093.jpg' /> " +
-                         varibles + " </body> </hmtl> ";
+                         varibles + "  </body> </hmtl> ";
             }
 
 

@@ -4,13 +4,21 @@ import com.barbershop.entites.Customer;
 import com.barbershop.entites.Employee;
 import com.barbershop.exception.EmployeeNoExists;
 import com.barbershop.repository.EmployeeRepository;
+import com.barbershop.security.payload.LoginPayload;
 import com.barbershop.service.EmployeService;
+import com.barbershop.service.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +28,6 @@ public class EmployeeServiceImpl implements EmployeService , UserDetailsService 
 
     @Autowired
     private EmployeeRepository employeeRepository;
-
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
@@ -103,4 +110,5 @@ public class EmployeeServiceImpl implements EmployeService , UserDetailsService 
         }
         return res;
     }
+
 }

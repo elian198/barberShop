@@ -1,6 +1,7 @@
 package com.barbershop.controller;
 
 import com.barbershop.DTO.AppointmentDto;
+import com.barbershop.DTO.Time;
 import com.barbershop.entites.Appointment;
 import com.barbershop.entites.TypeService;
 import com.barbershop.service.impl.AppointmentServiceImpl;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -94,6 +96,13 @@ public class AppointmentController {
     public List<AppointmentDto> diasParaTurnos(){
 
         return appointmentService.turnos();
+    }
+
+    @PostMapping("/appointment/totalDay")
+    @ApiOperation("Muestra la fecha del turno y cuantos dias faltan")
+    public ResponseEntity<?> totalDay(@RequestBody Appointment appointment){
+
+        return ResponseEntity.ok("El total del dia : " + appointment.getDate() + " $" +appointmentService.totalDay(appointment.getDate()));
     }
 
 }

@@ -115,9 +115,18 @@ public class AppointmentServiceImpl implements AppointmentService {
         total += preciofinal.getPrice();
 
       }
-      return total;
+      return (total) < 10000.0 ? total : total * 0.85;
 
     }
+     public  Double totalDay(LocalDate localDate){
+        double totalLocal = 0.0;
+
+        for(Appointment list: appointmentRepository.findByLocalDate(localDate)){
+           totalLocal +=  total(list.getId());
+        }
+        return totalLocal;
+     }
+
 
     public List<Time> findByLocalDate(LocalDate localDate){
         ConvertDto convertDto =  new ConvertDto();
