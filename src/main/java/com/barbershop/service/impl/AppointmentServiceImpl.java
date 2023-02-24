@@ -69,6 +69,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         throw new Exception("No se encontro el id");
     }
 
+
     @Override
     public List<AppointmentDto> turnos() {
 

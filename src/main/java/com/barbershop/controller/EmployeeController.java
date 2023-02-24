@@ -2,12 +2,16 @@ package com.barbershop.controller;
 
 import com.barbershop.DTO.ResetPasswordDto;
 import com.barbershop.entites.Employee;
+import com.barbershop.exception.MyException;
+import com.barbershop.responseEntity.OutPutEntity;
 import com.barbershop.security.jwt.JwtTokenUtil;
 import com.barbershop.security.payload.JwtPayload;
 import com.barbershop.security.payload.LoginPayload;
 import com.barbershop.security.payload.RegisterPayload;
 import com.barbershop.service.email.EmailService;
 import com.barbershop.service.impl.EmployeeServiceImpl;
+import com.barbershop.service.impl.ModuleServiceImpl;
+import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import java.util.List;
 
+import static com.barbershop.util.MessageUtil.*;
+
+
 @RestController
 public class EmployeeController {
 
@@ -31,6 +38,9 @@ public class EmployeeController {
 
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    private ModuleServiceImpl moduleService;
 
     private final AuthenticationManager authManager;
 
@@ -41,29 +51,43 @@ public class EmployeeController {
     private String codigo;
     private String email;
 
-    public EmployeeController(EmployeeServiceImpl employeeService, AuthenticationManager authManager, JwtTokenUtil jwtTokenUtil, PasswordEncoder passwordEncoder) {
+    public EmployeeController(EmployeeServiceImpl employeeService, AuthenticationManager authManager, JwtTokenUtil jwtTokenUtil,
+                              PasswordEncoder passwordEncoder, ModuleServiceImpl module) {
         this.employeeService = employeeService;
         this.authManager = authManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.passwordEncoder = passwordEncoder;
+        this.moduleService = module;
     }
 
     @PostMapping("/register")
     @ApiOperation("Crea un nuevo usuario")
     @ApiParam("RegisterPayload registerPayload")
-    public ResponseEntity<?> save(@RequestBody RegisterPayload registerPayload){
-        if(registerPayload == null){
-            return ResponseEntity.badRequest().body("No se puede enviar campos vacios");
+    public ResponseEntity<?> save(@RequestBody @NotNull RegisterPayload registerPayload) throws MyException {
+        OutPutEntity<String> out = new OutPutEntity<>();
+
+    try {
+        if (registerPayload.error()) {
+           throw new MyException(NOTNULL.getKey(), NOTNULL.getCode());
+
         }
 
-
-        if(employeeService.findByEmail(registerPayload.getEmail())!= null){
-            return ResponseEntity.badRequest().body("EL email ya existe");
+        if (employeeService.findByEmail(registerPayload.getEmail()) != null) {
+           out.done(OK.getCode(), OK.getKey(), "El email ingresado ya existe");
+            return new ResponseEntity(out, out.getStatus());
         }
+
+    } catch (Exception e) {
+        out.error();
+        return new ResponseEntity(out, out.getStatus());
+    }
         registerPayload.setPassword(passwordEncoder.encode(registerPayload.getPassword()));
         Employee employee = registerPayload.convertToEntities();
         employeeService.Save(employee);
-        return ResponseEntity.ok("Usuario creado");
+        out = moduleService.insertModule(registerPayload);
+        out.done(OK.getCode(), OK.getKey(), registerPayload.getFirst_name());
+        return new ResponseEntity(out, out.getStatus());
+
     }
     @PostMapping("/login")
     @ApiOperation("Comprueba que exista el usuario enviado, si esta todo ok devulve un token, que es el que nos va a servir para navegar por las diferentes end points")

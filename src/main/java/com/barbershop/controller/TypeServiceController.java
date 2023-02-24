@@ -60,4 +60,9 @@ public class TypeServiceController {
     public List<TypeService> findAll(){
         return typeServiceimpl.findAll();
     }
+
+    @GetMapping("/total")
+    public double total(){
+        return typeServiceimpl.total();
+    }
 }

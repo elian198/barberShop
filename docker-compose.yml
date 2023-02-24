@@ -1,0 +1,24 @@
+version: '  20.10.17'
+
+services:
+  app:
+    image: 'immagen-barbershop:latest'
+    build:
+      context: "."
+    container_name: barbershop
+    depends_on:
+      -db
+    environment:
+      -spring.datasource.url=jdbc:postgresql://localhost:5432/barberShop
+      -spring.datasource.username=${USER_POSTGRES}
+      -spring.datasource.password=${PASS_POSTGRES}
+      -spring.jpa.hibernate.ddl-auto= update
+      -spring.jpa.show-sql=true
+    port:
+      - 8081:9000
+
+  db:
+    image: 'postgres'
+    container_name: 'postgres-container'
+    environment:
+        -POSTGRES_PASSWORD= 9797

@@ -55,4 +55,7 @@ public class TypeServiceImpl implements HairService {
         }
         throw new FileNotFoundException("No se encontro el ID");
     }
+    public double total(){
+        return typeServiceRepository.total();
+    }
 }

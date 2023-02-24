@@ -63,6 +63,9 @@ public class EmployeeServiceImpl implements EmployeService , UserDetailsService 
 
           //throw new EmailExistEmployee();
         }
+      //  if(employeeRepository.existeLastName(employee.getLast_name()) == 1){
+            
+       // }
         employeeRepository.save(employee);
     }
 

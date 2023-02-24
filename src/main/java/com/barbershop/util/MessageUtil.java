@@ -9,7 +9,9 @@ public enum MessageUtil {
     NOTFOUND("No existen registros ", 404),
     INTERNALERROR("Error en el servidor ", 500),
     CONFLICT("Hubo un error en su peticion ", 409),
-    BADREQUEST("Hubo un error en su peticion ", 400);
+    BADREQUEST("Hubo un error en su peticion ", 400),
+    ERRORNAME("El ingresado ya existe!!", 400),
+    NOTNULL("Debe completar los campos!!!", 400);
 
     private  String key;
     private  int code;
